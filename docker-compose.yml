@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongochatboot
+    ports:
+      - "27017:27017"
+    networks:
+      - mynetwork
+
+  chat-boot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chat-boot-app
+    depends_on:
+      - mongodb
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/chat_boot_db
+    ports:
+      - "8080:8080"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
