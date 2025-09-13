@@ -1,0 +1,6 @@
+wasi:
+  api:
+    base-url: https://api.wasi.co
+    version: v1
+    company-id: 11062593
+    token: TV6i_aGgM_ZpEM_DwIh

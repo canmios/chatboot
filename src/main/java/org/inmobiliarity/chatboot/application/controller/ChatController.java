@@ -1,43 +1,25 @@
 package org.inmobiliarity.chatboot.application.controller;
 
-import org.apache.hc.core5.http.ParseException;
+import lombok.AllArgsConstructor;
+import org.inmobiliarity.chatboot.application.request.PropertyRequest;
 import org.inmobiliarity.chatboot.domain.model.Property;
-import org.inmobiliarity.chatboot.domain.service.ChatService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.inmobiliarity.chatboot.domain.service.PropertyService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class ChatController {
 
-    private final ChatService chatService;
+    private final PropertyService propertyService;
 
-    public ChatController(ChatService chatService) {
-        this.chatService = chatService;
+    @GetMapping("/properties/search")
+    public Flux<Property> searchProperties(@RequestBody PropertyRequest propertyRequest) {
+        return propertyService.getFilteredProperties(propertyRequest);
     }
 
-    @PostMapping("/chat")
-    public ResponseEntity<String> chat(@RequestBody String message) {
-        try {
-            String response = chatService.processUserMessage(message);
-            return ResponseEntity.ok(response);
-        } catch (IOException | ParseException e) {
-            return ResponseEntity.status(500).body("Error processing message");
-        }
-    }
-
-    @PostMapping("/properties")
-    public ResponseEntity<String> saveProperty(@RequestBody Property property) {
-        try {
-            chatService.saveProperty(property);
-            return ResponseEntity.ok("Property saved successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error saving property");
-        }
-    }
 }
